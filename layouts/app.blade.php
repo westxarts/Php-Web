@@ -1,36 +1,24 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-@include('backend.include.__head')
+<html lang="en">
 
-<body>
-<!--Full Layout-->
-<div class="layout">
+@include('frontend::include.__head')
+<body class="{{ session()->get('site-color-mode') ?? 'dark-theme' }}">
+<x:notify-messages/>
+<!--Header Area-->
+@include('frontend::include.__header')
+<!--/Header Area End-->
 
-    <x:notify-messages/>
-    <!--Header-->
-    @include('backend.include.__header')
-    <!--/Header-->
+@yield('content')
 
-    <!--Side Nav-->
-    @include('backend.include.__side_nav')
-    <!--/Side Nav-->
+<!--Footer Area-->
+@include('frontend::include.__footer')
+<!--Footer Area End-->
 
-    <!--Page Content-->
-    <div class="page-container">
-        @yield('content')
-    </div>
-    <!--Page Content-->
-</div>
-<!--/Full Layout-->
+@include('frontend::cookie.gdpr_cookie')
 
-@include('backend.include.__script')
+@include('frontend::include.__script')
 
 
 </body>
 </html>
-
-
-
-
-
 

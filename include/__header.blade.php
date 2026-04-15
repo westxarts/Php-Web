@@ -1,76 +1,71 @@
-<div class="header">
-    <div class="logo">
-        <a href="{{route('admin.dashboard')}}">
-            <img
-                class="logo-unfold"
-                src="{{asset(setting('site_logo','global'))}}"
-                alt="Logo"
-            />
-            <img
-                class="logo-fold"
-                src="{{asset(setting('site_logo','global'))}}"
-                alt="Logo"
-            />
-        </a>
-    </div>
-    <div class="nav-wrap">
-        <div class="nav-left">
-            <button class="sidebar-toggle"><i icon-name="list"></i></button>
-        </div>
-        <div class="nav-right">
-
-            <div class="single-nav-right admin-language-switch">
-                <select name="language" class="form-select"
-                        onchange="window.location.href=this.options[this.selectedIndex].value;">
-                    @foreach(\App\Models\Language::where('status',true)->get() as $lang)
-                        <option
-                            value="{{ route('language-update',['name'=> $lang->locale]) }}" @selected( app()->getLocale() == $lang->locale )>{{$lang->name}}</option>
+<header class="header">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{route('home')}}"><img src="{{ asset(setting('site_logo','global')) }}"
+                                                                  alt=""/></a>
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav m-auto mb-2 mb-lg-0 main-nav">
+                    @foreach($navigations as $navigation)
+                        @if($navigation->page->status|| $navigation->page_id == null)
+                            <li class="nav-item">
+                                <a class="nav-link @if(url($navigation->url) == Request::url() ) active @endif"
+                                   href="{{ url($navigation->url) }}">{{ $navigation->tname }}</a>
+                            </li>
+                        @endif
                     @endforeach
-                </select>
-            </div>
 
-            <div class="single-nav-right admin-notifications">
-                @php
-                    $notifications = App\Models\Notification::where('for','admin')->latest()->take(10)->get();
-                    $totalUnread = App\Models\Notification::where('for','admin')->where('read', 0)->count();
-                    $totalCount = App\Models\Notification::where('for','admin')->get()->count();
-                @endphp
-                @include('global.__notification_data',['notifications'=>$notifications,'totalUnread'=>$totalUnread,'totalCount'=>$totalCount])
-            </div>
-
-
-            <div class="single-nav-right">
-                <a href="{{ route('home') }}" target="_blank" class="item" data-bs-toggle="tooltip" title=""
-                   data-bs-placement="left" data-bs-original-title="Visit Landing Page">
-                    <i icon-name="globe"></i>
-                </a>
-            </div>
-            <div class="single-nav-right">
-                <button type="button" class="item" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i icon-name="user"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li>
-                        <a href="{{ route('admin.profile') }}" class="dropdown-item"><i
-                                icon-name="user"></i>{{ __('Profile') }}</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.password-change') }}" class="dropdown-item">
-                            <i icon-name="lock"></i>{{ __('Change Password') }}
-                        </a>
-                    </li>
-                    <li class="logout">
-
-                        <a href="{{ url('admin/logout') }}" class="dropdown-item" type="button"
-                           onclick="event.preventDefault(); localStorage.clear();  $('#logout-form').submit();">
-                            <i icon-name="log-out"></i> {{ __('Logout') }}
-                        </a>
-                        <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-                    </li>
                 </ul>
+                <div class="header-right-btn">
+
+                    <select name="language" id="" class="language-nice-select site-nice-select me-3"
+                            onchange="window.location.href=this.options[this.selectedIndex].value;">
+                        @foreach(\App\Models\Language::where('status',true)->get() as $lang)
+                            <option
+                                value="{{ route('language-update',['name'=> $lang->locale]) }}" @selected( app()->getLocale() == $lang->locale )>{{$lang->name}}</option>
+                        @endforeach
+                    </select>
+
+
+                    @auth('web')
+                        <a href="{{route('user.dashboard')}}" class="site-btn-sm grad-btn"><i
+                                class="anticon anticon-dashboard"></i>{{ __('Dashboard') }}</a>
+
+                    @else
+                        <a href="{{route('register')}}" class="site-btn-sm primary-btn"><i
+                                class="anticon anticon-user-add"></i>{{ __('Register') }}</a>
+                        <a href="{{route('login')}}" class="site-btn-sm grad-btn ms-2"><i
+                                class="anticon anticon-user"></i>{{ __('Account') }}</a>
+
+                    @endauth
+
+                    <div class="color-switcher">
+                        <i icon-name="moon" class="dark-icon" data-mode="dark"></i>
+                        <i icon-name="sun" class="light-icon" data-mode="light"></i>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
+    </nav>
+</header>
+@push('script')
+    <script>
+        // Color Switcher
+        $(".color-switcher").on('click', function () {
+            "use strict"
+            $("body").toggleClass("dark-theme");
+            var url = '{{ route("mode-theme") }}';
+            $.get(url)
+        });
+    </script>
+@endpush

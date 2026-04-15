@@ -1,10 +1,8 @@
 @extends('frontend::layouts.auth')
-
 @section('title')
-    {{ __('Login') }}
+    {{ __('Reset Password') }}
 @endsection
 @section('content')
-
     <!-- Login Section -->
     <section class="section-style site-auth">
         <div class="container">
@@ -15,8 +13,8 @@
                             <a href="{{ route('home')}}"><img src="{{ asset(setting('site_logo','global')) }}" alt=""/></a>
                         </div>
                         <div class="title">
-                            <h2> {{ $data['title'] }}</h2>
-                            <p>{{ $data['bottom_text'] }}</p>
+                            <h2>👋 {{ __('Reset password') }}</h2>
+                            <p>{{  __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}</p>
                         </div>
                         @if ($errors->any())
                             <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -28,59 +26,63 @@
                             </div>
                         @endif
 
+                        @if(session('status'))
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <strong>{{ session('status') }}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                            </div>
+                        @endif
+
 
                         <div class="site-auth-form">
-                            <form method="POST" action="{{ route('login') }}">
+
+
+                            <form method="POST" action="{{ route('password.update') }}">
                                 @csrf
+
+                                <!-- Password Reset Token -->
+                                <input type="hidden" name="token" value="{{ $request->route('token') }}">
+
+                                <!-- Email Address -->
+
                                 <div class="single-field">
-                                    <label class="box-label" for="email">{{ __('Email Or Username') }}</label>
+                                    <label class="box-label" for="email">{{ __('Email') }}</label>
                                     <input
                                         class="box-input"
                                         type="text"
                                         name="email"
-                                        placeholder="Enter your email address or username"
+                                        placeholder="Enter your email address"
+                                        required
+                                        value="{{ old('email',$request->email) }}"
+                                    />
+                                </div>
+
+                                <div class="single-field">
+                                    <label class="box-label" for="email">{{ __('New Password') }}</label>
+                                    <input
+                                        class="box-input"
+                                        type="password"
+                                        name="password"
                                         required
                                     />
                                 </div>
-                                <div class="single-field">
-                                    <label class="box-label" for="password">{{ __('Password') }}</label>
-                                    <div class="password">
-                                        <input
-                                            class="box-input"
-                                            type="password"
-                                            name="password"
-                                            placeholder="Enter your password"
-                                            required
-                                        />
-                                    </div>
-                                </div>
-
-                                @if($googleReCaptcha)
-                                    <div class="g-recaptcha mb-3" id="feedback-recaptcha"
-                                         data-sitekey="{{ json_decode($googleReCaptcha->data,true)['google_recaptcha_key'] }}">
-                                    </div>
-                                @endif
 
                                 <div class="single-field">
+                                    <label class="box-label" for="email">{{ __('Confirm Password') }}</label>
                                     <input
-                                        class="form-check-input check-input"
-                                        type="checkbox"
-                                        name="remember"
-                                        id="flexCheckDefault"
+                                        class="box-input"
+                                        type="password"
+                                        name="password_confirmation"
+                                        required
                                     />
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                        {{ __('Remember me') }}
-                                    </label>
-
-                                    @if (Route::has('password.request'))
-                                        <span class="forget-pass-text"><a
-                                                href="{{ route('password.request') }}">{{ __('Forget Password') }}</a></span>
-                                    @endif
                                 </div>
+
                                 <button type="submit" class="site-btn grad-btn w-100">
-                                    {{ __('Account Login') }}
+                                    {{ __('Reset Password') }}
                                 </button>
                             </form>
+
                             <div class="singnup-text">
                                 <p>
                                     {{ __("Don't have an account?") }}
@@ -95,8 +97,4 @@
     </section>
     <!-- Login Section End -->
 @endsection
-@section('script')
-    @if($googleReCaptcha)
-        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    @endif
-@endsection
+

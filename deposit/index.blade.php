@@ -1,58 +1,36 @@
-@extends('backend.layouts.app')
+@extends('frontend::layouts.user')
+@section('title')
+    {{ __('Deposit Now') }}
+@endsection
 @section('content')
-    <div class="main-content">
-        <div class="page-title">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col">
-                        <div class="title-content">
-                            <h2 class="title"> @yield('title')</h2>
-                            @isset($button)
-                                <a href="{{$button['route']}}"
-                                   class="title-btn"
-                                   type="button"
-                                ><i icon-name="{{$button['icon']}}"></i>{{$button['name']}}</a>
-                            @endisset
-                        </div>
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="site-card">
+                <div class="site-card-header">
+                    <h3 class="title">{{ __('Add Money') }}</h3>
+                    <div class="card-header-links">
+                        <a href="{{ route('user.deposit.log') }}"
+                           class="card-header-link">{{ __('Deposit History') }}</a>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="site-tab-bars">
-                        <ul>
-
-                            @can('automatic-gateway-manage')
-                                <li class="{{ isActive('admin.deposit.method.list','auto') . isActive('admin.deposit.method.create','auto'). isActive('admin.deposit.method.edit','auto')  }}">
-                                    <a href="{{ route('admin.deposit.method.list','auto') }}"><i
-                                            icon-name="settings-2"></i>{{ __('Automatic Method') }}</a>
-                                </li>
-                            @endcan
-
-                            @can('manual-gateway-manage')
-                                <li class="{{ isActive('admin.deposit.method.list','manual') . isActive('admin.deposit.method.create','manual') . isActive('admin.deposit.method.edit','manual') }}">
-                                    <a href="{{ route('admin.deposit.method.list','manual') }}"><i
-                                            icon-name="book-open"></i>{{ __('Manual Method') }}</a>
-                                </li>
-                            @endcan
-                            @canany(['deposit-list','deposit-action'])
-                                <li class="{{ isActive('admin.deposit.manual.pending') }}">
-                                    <a href="{{ route('admin.deposit.manual.pending') }}"><i
-                                            icon-name="box"></i>{{ __('Manual Pending Deposit') }}</a>
-                                </li>
-                                <li class="{{ isActive('admin.deposit.history') }}">
-                                    <a href="{{ route('admin.deposit.history') }}"><i
-                                            icon-name="calendar"></i>{{ __('Deposit History') }}</a>
-                                </li>
-                            @endcanany
-                        </ul>
+                <div class="site-card-body">
+                    <div class="progress-steps">
+                        <div class="single-step {{ $isStepOne }}">
+                            <div class="number">{{ __('01') }}</div>
+                            <div class="content">
+                                <h4>{{ __('Deposit Amount') }}</h4>
+                                <p>{{ __('Enter your deposit details') }}</p>
+                            </div>
+                        </div>
+                        <div class="single-step {{ $isStepTwo }}">
+                            <div class="number">{{ __('02') }}</div>
+                            <div class="content">
+                                <h4>{{ __('Success') }}</h4>
+                                <p>{{  $notify['card-header'] ??  __('Success Your Deposit') }}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="row">
-                        @yield('deposit_content')
-                    </div>
+                    @yield('deposit_content')
                 </div>
             </div>
         </div>
