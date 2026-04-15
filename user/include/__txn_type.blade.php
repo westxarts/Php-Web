@@ -1,1 +1,1 @@
-<div class="site-badge primary-bg">{{ ucwords(str_replace("_"," ",$type)) }}</div>
+<div class="site-badge primary-bg">{{ ucfirst(str_replace('_',' ',$type)) }}</div>
